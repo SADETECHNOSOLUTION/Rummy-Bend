@@ -1,0 +1,10 @@
+C:\Users\USER\Downloads\rummy-main-bend\rummy-main-bend\settings\src\main\java\com\sadetech\settings\controller\SettingsController.java
+C:\Users\USER\Downloads\rummy-main-bend\rummy-main-bend\settings\src\main\java\com\sadetech\settings\exception\ErrorResponse.java
+C:\Users\USER\Downloads\rummy-main-bend\rummy-main-bend\settings\src\main\java\com\sadetech\settings\exception\GlobalExceptionHandler.java
+C:\Users\USER\Downloads\rummy-main-bend\rummy-main-bend\settings\src\main\java\com\sadetech\settings\exception\PlayerNotFoundException.java
+C:\Users\USER\Downloads\rummy-main-bend\rummy-main-bend\settings\src\main\java\com\sadetech\settings\exception\ResourceNotFoundException.java
+C:\Users\USER\Downloads\rummy-main-bend\rummy-main-bend\settings\src\main\java\com\sadetech\settings\feign\UserFeignClient.java
+C:\Users\USER\Downloads\rummy-main-bend\rummy-main-bend\settings\src\main\java\com\sadetech\settings\model\Settings.java
+C:\Users\USER\Downloads\rummy-main-bend\rummy-main-bend\settings\src\main\java\com\sadetech\settings\repository\SettingsRepository.java
+C:\Users\USER\Downloads\rummy-main-bend\rummy-main-bend\settings\src\main\java\com\sadetech\settings\service\SettingsService.java
+C:\Users\USER\Downloads\rummy-main-bend\rummy-main-bend\settings\src\main\java\com\sadetech\settings\SettingsApplication.java
