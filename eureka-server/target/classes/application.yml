@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: eureka-server
+
+server:
+  port: ${PORT:8762}
+
+eureka:
+  server:
+    enableSelfPreservation: true
+    eviction-interval-timer-in-ms: 30000
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    hostname: ${RENDER_EXTERNAL_HOSTNAME:localhost}
+    prefer-ip-address: false
