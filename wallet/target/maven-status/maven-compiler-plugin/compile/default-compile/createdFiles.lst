@@ -1,0 +1,8 @@
+com\sadetech\wallet\service\WalletService.class
+com\sadetech\wallet\WalletApplication.class
+com\sadetech\wallet\exception\GlobalExceptionHandler.class
+com\sadetech\wallet\model\Wallet.class
+com\sadetech\wallet\controller\WalletController.class
+com\sadetech\wallet\repository\WalletRepo.class
+com\sadetech\wallet\exception\WalletNotFoundException.class
+com\sadetech\wallet\exception\ErrorResponse.class
