@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: game-engine
+
+  data:
+    mongodb:
+      uri: mongodb+srv://sreemanvk:Msg2709@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
+      database: cards
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}]"
+
+server:
+  port: 7072
+  address: 0.0.0.0
+
+# Eureka configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: https://rummy-eureka-v1.onrender.com/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    # This will change how it appears in the Eureka Dashboard
+    instance-id: ${spring.application.name}:${random.value}
+    # This ensures it uses the IP/Internal host for communication
+    prefer-ip-address: true

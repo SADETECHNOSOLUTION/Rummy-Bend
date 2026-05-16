@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5c0cd684-9aa0-4a76-b5ad-7e589d07a204" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_engine/src/main/java/com/sadetech/game_engine/controller/CardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/game_engine/src/main/java/com/sadetech/game_engine/controller/CardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/room-creation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/room-creation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/room-creation/src/main/java/com/sadetech/room_creation/service/RoomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/room-creation/src/main/java/com/sadetech/room_creation/service/RoomService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-validator/src/main/java/com/sadetech/rummy_validator/service/CardValidationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-validator/src/main/java/com/sadetech/rummy_validator/service/CardValidationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/controller/UserManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/controller/UserManagementController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/service/RateLimiterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/service/RateLimiterService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/service/UsersManagementService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/service/UsersManagementService.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Exception" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$MAVEN_REPOSITORY$/org/springframework/data/spring-data-redis/3.4.0/spring-data-redis-3.4.0.jar!/org/springframework/data/redis/core/StringRedisTemplate.class" root0="SKIP_INSPECTION" />
+    <setting file="jar:///usr/lib/jvm/jdk-21.0.6-oracle-x64/lib/src.zip!/java.base/java/lang/SuppressWarnings.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2qTPkjAInPxqFoBQkLRilAEJUDO" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.ApiGatewayApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.GameEngineApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.RoomCreationApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.RummyValidatorApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TournamentApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.UserInfoApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.WalletApplication.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;full.screen.before.presentation.mode&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main-bend&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/gokul/MavenProject&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  }
+}</component>
+  <component name="RunManager" selected="Application.RoomCreationApplication">
+    <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.sadetech.api_gateway.ApiGatewayApplication" />
+      <module name="api-gateway" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.sadetech.api_gateway.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GameEngineApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.sadetech.game_engine.GameEngineApplication" />
+      <module name="game_engine" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.sadetech.game_engine.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoomCreationApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.sadetech.room_creation.RoomCreationApplication" />
+      <module name="room-creation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.sadetech.room_creation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserInfoApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.sadetech.user_info.UserInfoApplication" />
+      <module name="user-info" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.sadetech.user_info.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WalletApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.sadetech.wallet.WalletApplication" />
+      <module name="wallet" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.sadetech.wallet.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.GameEngineApplication" />
+      <item itemvalue="Application.WalletApplication" />
+      <item itemvalue="Application.UserInfoApplication" />
+      <item itemvalue="Application.ApiGatewayApplication" />
+      <item itemvalue="Application.RoomCreationApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.RoomCreationApplication" />
+        <item itemvalue="Application.GameEngineApplication" />
+        <item itemvalue="Application.WalletApplication" />
+        <item itemvalue="Application.UserInfoApplication" />
+        <item itemvalue="Application.ApiGatewayApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5c0cd684-9aa0-4a76-b5ad-7e589d07a204" name="Changes" comment="" />
+      <created>1734683736600</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1734683736600</updated>
+    </task>
+    <servers />
+  </component>
+</project>

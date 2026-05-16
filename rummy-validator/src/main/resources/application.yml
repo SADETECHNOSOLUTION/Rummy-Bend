@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: rummy-validator
+
+  data:
+    mongodb:
+      uri: mongodb+srv://sreemanvk:Msg2709@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
+      database: validator_service
+
+
+server:
+  port: 7074
+
+eureka:
+  client:
+    service-url:
+      defaultZone: https://rummy-eureka-v1.onrender.com/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    instance-id: ${spring.application.name}:${random.value}
+    prefer-ip-address: true

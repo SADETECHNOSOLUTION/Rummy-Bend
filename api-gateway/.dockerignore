@@ -1,0 +1,10 @@
+# Ignore the target folder...
+target/
+# ...BUT do not ignore the .jar files inside it!
+!target/*.jar
+
+# Keep these ignored
+.idea/
+.vscode/
+.git/
+node_modules/

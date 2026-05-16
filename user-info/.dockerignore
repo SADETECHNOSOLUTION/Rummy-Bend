@@ -1,0 +1,10 @@
+# Ignore everything in target
+target/
+# Except the actual jar file we need for the image
+!target/*.jar
+
+# Other common ignores
+.idea/
+.vscode/
+.git/
+*.env

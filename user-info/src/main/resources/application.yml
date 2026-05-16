@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: USER-INFO
+
+  data:
+    mongodb:
+      uri: mongodb+srv://sreemanvk:Msg2709@cluster0.pvohmlz.mongodb.net/user_authentication?retryWrites=true&w=majority
+      database: user_authentication
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USER}
+    password: ${EMAIL_PASS}
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+  redis:
+    url: ${REDIS_URL}
+
+
+
+server:
+  port: ${PORT:10000}
+  address: 0.0.0.0
+
+wallet:
+  id: ${WALLET_ID}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: https://rummy-eureka-v1.onrender.com/eureka/
+  instance:
+    # ADD THIS LINE: It forces the ID to match your public URL
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: false
+    non-secure-port: ${SERVER_PORT:10000}
+    hostname: rummy-userinfo-v1-1.onrender.com
+    status-page-url-path: /actuator/info
+    health-check-url-path: /actuator/health
+    
+jwt:
+  secret: ${JWT_SECRET}
+
+
+
+
+
+
+
+

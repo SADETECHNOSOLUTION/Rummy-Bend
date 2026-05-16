@@ -1,0 +1,212 @@
+spring:
+  application:
+    name: api-gateway
+
+  data:      # <--- Make sure 'data' is here!
+    redis:
+      url: ${REDIS_URL}
+
+  cloud:
+    loadbalancer:
+      use-raw-hostname-in-service-instance: false 
+    gateway:
+      redis-rate-limiter:
+        enabled: true
+        request-rate-limiter:
+          enabled: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origin-patterns: "*"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowed-headers: "*"
+            allow-credentials: true
+
+      routes:
+        - id: user-info
+          uri: lb://USER-INFO
+          predicates:
+            - Path=/api/user/**
+          # filters:
+          #   - name: JwtAuthFilter
+          #   - name: RequestRateLimiter
+          #     args:
+          #       redis-rate-limiter.replenishRate: 5   # 5 requests per second
+          #       redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+          #       key-resolver: "#{@combinedKeyResolver}"
+
+        - id: game-engine
+          uri: lb://GAME-ENGINE
+          predicates:
+            - Path=/api/cards/**
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+        # - id: tournament
+        #   uri: lb://TOURNAMENT
+        #   predicates:
+        #     - Path=/api/tournament/**
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+        - id: rummy-validator
+          uri: lb://RUMMY-VALIDATOR
+          predicates:
+            - Path=/api/rummy/**
+          # filters:
+          #   - name: JwtAuthFilter
+          #   - name: RequestRateLimiter
+          #     args:
+          #       redis-rate-limiter.replenishRate: 5   # 5 requests per second
+          #       redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+          #       key-resolver: "#{@combinedKeyResolver}"
+
+        - id: room-creation
+          uri: lb://ROOM-CREATION
+          predicates:
+            - Path=/api/room/**
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+        # - id: point-allocation
+        #   uri: lb://POINT-ALLOCATION
+        #   predicates:
+        #     - Path=/api/point/**
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+        # - id: wallet
+        #   uri: lb://WALLET
+        #   predicates:
+        #     - Path=/api/wallet/**
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+        # - id: kyc-verification
+        #   uri: lb://KYC-VERIFICATION
+        #   predicates:
+        #     - Path=/api/kyc/**
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+        # - id: missions
+        #   uri: lb://MISSIONS
+        #   predicates:
+        #     - Path=/api/mission/**
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+        # - id: websocket
+        #   uri: ws://WEBSOCKET
+        #   predicates:
+        #     - Path=/ws/player-status
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+        # - id: chatbot
+        #   uri: lb://CHATBOT
+        #   predicates:
+        #     - Path=/chatbot/**
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+        - id: settings
+          uri: lb://SETTINGS
+          predicates:
+            - Path=/api/settings/**
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+        # - id: friend-request
+        #   uri: lb://FRIEND-REQUEST
+        #   predicates:
+        #     - Path=/api/request/**
+        #   filters:
+        #     - name: JwtAuthFilter
+        #     - name: RequestRateLimiter
+        #       args:
+        #         redis-rate-limiter.replenishRate: 5   # 5 requests per second
+        #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
+        #         key-resolver: "#{@combinedKeyResolver}"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: https://rummy-eureka-v1.onrender.com/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+    instance:
+      # Forces the public identity in Eureka
+      instance-id: ${spring.application.name}:${random.value}
+      hostname: rummy-apigateway-v1
+      prefer-ip-address: false
+      # Required for Render to route properly
+      non-secure-port: ${server.port}
+    
+server:
+  port: ${PORT:7070}
+  address: 0.0.0.0
+
+jwt:
+  secret: ${JWT_SECRET}
+
+  pattern:
+    level: "%5p [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}]"
+
+
