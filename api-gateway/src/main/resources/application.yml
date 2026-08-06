@@ -3,21 +3,22 @@ spring:
     name: api-gateway
 
   data:      # <--- Make sure 'data' is here!
-    redis:
-      url: ${REDIS_URL}
+#    redis:
+#      url: ${REDIS_URL:redis://localhost:6379}
 
   cloud:
     loadbalancer:
       use-raw-hostname-in-service-instance: false 
     gateway:
       redis-rate-limiter:
-        enabled: true
+        enabled: false
         request-rate-limiter:
-          enabled: true
+          enabled: false
       globalcors:
         cors-configurations:
           '[/**]':
-            allowed-origin-patterns: "*"
+            allowed-origins:
+              - "http://localhost:8081"
             allowed-methods:
               - GET
               - POST
@@ -30,7 +31,7 @@ spring:
 
       routes:
         - id: user-info
-          uri: lb://USER-INFO
+          uri: http://localhost:10000
           predicates:
             - Path=/api/user/**
           # filters:
@@ -101,10 +102,10 @@ spring:
         #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
         #         key-resolver: "#{@combinedKeyResolver}"
 
-        # - id: wallet
-        #   uri: lb://WALLET
-        #   predicates:
-        #     - Path=/api/wallet/**
+        - id: wallet
+          uri: lb://WALLET
+          predicates:
+            - Path=/api/wallet/**
         #   filters:
         #     - name: JwtAuthFilter
         #     - name: RequestRateLimiter
@@ -204,7 +205,7 @@ server:
   address: 0.0.0.0
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:mySuperSecretKeyForLocalDevelopment1234567890}
 
   pattern:
     level: "%5p [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}]"

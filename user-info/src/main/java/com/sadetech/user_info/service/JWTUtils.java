@@ -25,7 +25,7 @@ public class JWTUtils {
 
     // Read secret key from application.yml
     public JWTUtils(@Value("${jwt.secret}") String secretString) {
-        byte[] keyBytes = Base64.getDecoder().decode(secretString.getBytes(StandardCharsets.UTF_8));
+        byte[] keyBytes = secretString.getBytes(StandardCharsets.UTF_8);
         this.key = new SecretKeySpec(keyBytes, "HmacSHA256");
     }
 

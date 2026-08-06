@@ -19,6 +19,10 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: https://rummy-eureka-v1.onrender.com/eureka/
+      defaultZone: https://rummy-eureka-v1-35lo.onrender.com/eureka/
     fetch-registry: true
     register-with-eureka: true
+  instance:
+    instance-id: ${spring.application.name}:${random.value}
+    hostname: rummy-wallet-v1-6b5v.onrender.com
+    prefer-ip-address: false

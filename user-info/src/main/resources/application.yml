@@ -28,12 +28,12 @@ server:
   address: 0.0.0.0
 
 wallet:
-  id: ${WALLET_ID}
+  id: ${WALLET_ID:default_wallet_id}
 
 eureka:
   client:
     service-url:
-      defaultZone: https://rummy-eureka-v1.onrender.com/eureka/
+      defaultZone: https://rummy-eureka-v1-35lo.onrender.com/eureka/
   instance:
     # ADD THIS LINE: It forces the ID to match your public URL
     instance-id: ${spring.application.name}:${server.port}
@@ -44,7 +44,7 @@ eureka:
     health-check-url-path: /actuator/health
     
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:mySuperSecretKeyForLocalDevelopment1234567890}
 
 
 

@@ -82,7 +82,7 @@ public class UsersManagementService {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    @Value("${wallet.id}")
+    @Value("${wallet.id:default_wallet_id}")
     private String walletId;
 
     @Autowired

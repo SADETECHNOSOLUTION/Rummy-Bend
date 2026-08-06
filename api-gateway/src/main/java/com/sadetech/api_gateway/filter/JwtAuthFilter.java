@@ -1,7 +1,6 @@
 package com.sadetech.api_gateway.filter;
 
 import io.jsonwebtoken.*;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -10,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.List;
 
 @Component
@@ -33,20 +35,17 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
             "/api/user/register-mobile",
             "/api/user/verify-otp-register-with-referral",
             "/api/cards/points",
-             "/api/cards/get-points"
+            "/api/cards/get-points"
     );
 
     private boolean isExcludedPath(String path) {
-        // Handle dynamic paths by using pattern matching with wildcards
         for (String excludedPath : EXCLUDED_PATHS) {
             if (excludedPath.endsWith("/**")) {
-                // For paths like "/api/admin/check-email/**", match everything under that path
-                String prefix = excludedPath.substring(0, excludedPath.length() - 3); // Remove "/**"
+                String prefix = excludedPath.substring(0, excludedPath.length() - 3);
                 if (path.startsWith(prefix)) {
                     return true;
                 }
             } else {
-                // For exact matches (non-dynamic paths)
                 if (path.equals(excludedPath)) {
                     return true;
                 }
@@ -60,6 +59,11 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
 
     public JwtAuthFilter() {
         super(Config.class);
+    }
+
+    private Key getSigningKey() {
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        return new SecretKeySpec(keyBytes, "HmacSHA256");
     }
 
     @Override
@@ -92,8 +96,8 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
 
             String playerId = extractPlayerId(token);
 
-            ServerHttpRequest modifiedRequest =  exchange.getRequest().mutate()
-                    .header("x-player-id",playerId)
+            ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
+                    .header("x-player-id", playerId)
                     .build();
 
             // If valid, proceed with the request
@@ -103,39 +107,24 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
 
     private boolean isTokenValid(String token) {
         try {
-            // Decode the token with Apache Commons Codec
-            byte[] decodedKey = Base64.decodeBase64(secretKey);
-
-            // Parse the JWT and validate it
             Claims claims = Jwts.parser()
-                    .setSigningKey(decodedKey) // Use the decoded secret key
+                    .setSigningKey(getSigningKey())
                     .parseClaimsJws(token)
                     .getBody();
 
-            // Additional checks can be added here (e.g., check claims, roles, etc.)
-            return !claims.getExpiration().before(new java.util.Date()); // Ensure token is not expired
-        } catch (SignatureException | ExpiredJwtException e) {
-            // Token is invalid or expired
-            return false;
-        } catch (Exception e) {
-            // Other exceptions, token may not be valid
+            return !claims.getExpiration().before(new java.util.Date());
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
 
     private String extractPlayerId(String token) {
-
-        // Decode the token with Apache Commons Codec
-        byte[] decodedKey = Base64.decodeBase64(secretKey);
-
-        // Parse the JWT and validate it
         Claims claims = Jwts.parser()
-                .setSigningKey(decodedKey) // Use the decoded secret key
+                .setSigningKey(getSigningKey())
                 .parseClaimsJws(token)
                 .getBody();
 
         return claims.get("playerId").toString();
-
     }
 
     public static class Config {

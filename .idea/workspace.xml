@@ -5,14 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5c0cd684-9aa0-4a76-b5ad-7e589d07a204" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/fun-bend.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game_engine/src/main/java/com/sadetech/game_engine/controller/CardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/game_engine/src/main/java/com/sadetech/game_engine/controller/CardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/room-creation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/room-creation/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/room-creation/src/main/java/com/sadetech/room_creation/service/RoomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/room-creation/src/main/java/com/sadetech/room_creation/service/RoomService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-validator/src/main/java/com/sadetech/rummy_validator/service/CardValidationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-validator/src/main/java/com/sadetech/rummy_validator/service/CardValidationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/controller/UserManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/controller/UserManagementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/service/RateLimiterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/service/RateLimiterService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/java/com/sadetech/api_gateway/config/WebConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/java/com/sadetech/api_gateway/filter/JwtAuthFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/java/com/sadetech/api_gateway/filter/JwtAuthFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_engine/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/game_engine/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/room-creation/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/room-creation/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-main-app-and.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-validator/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-validator/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/settings/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/service/JWTUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/service/JWTUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/service/UsersManagementService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-info/src/main/java/com/sadetech/user_info/service/UsersManagementService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-info/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/user-info/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wallet/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/wallet/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +40,65 @@
     <setting file="jar://$MAVEN_REPOSITORY$/org/springframework/data/spring-data-redis/3.4.0/spring-data-redis-3.4.0.jar!/org/springframework/data/redis/core/StringRedisTemplate.class" root0="SKIP_INSPECTION" />
     <setting file="jar:///usr/lib/jvm/jdk-21.0.6-oracle-x64/lib/src.zip!/java.base/java/lang/SuppressWarnings.java" root0="SKIP_INSPECTION" />
   </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.000000351742958" />
+      <entry key="MS500" value="1.0729925131277827" />
+      <entry key="S2" value="1.8602147235791295" />
+      <entry key="S5" value="2.4252203557281984" />
+      <entry key="S10" value="2.6879490060746303" />
+      <entry key="S30" value="2.8899558753610446" />
+      <entry key="S60" value="2.9446744556629314" />
+      <entry key="M2" value="2.993963347701815" />
+      <entry key="M5" value="3.2062403393441503" />
+      <entry key="M10" value="3.460749065851704" />
+      <entry key="M15" value="3.597643820509875" />
+      <entry key="M30" value="3.7736229846519613" />
+      <entry key="H1" value="3.8796866794259723" />
+      <entry key="H2" value="3.937947169388037" />
+      <entry key="H4" value="3.9684843593739485" />
+      <entry key="D1" value="3.994678116967695" />
+      <entry key="W1" value="3.9992380168395445" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.8122524014451348" />
+      <entry key="MS500" value="0.9824310279878248" />
+      <entry key="S2" value="1.561527549174726" />
+      <entry key="S5" value="2.1897526356836368" />
+      <entry key="S10" value="2.5391782799851197" />
+      <entry key="S30" value="2.831876516012151" />
+      <entry key="S60" value="2.9144566381711683" />
+      <entry key="M2" value="2.978539352711584" />
+      <entry key="M5" value="3.199955927891993" />
+      <entry key="M10" value="3.4575685176583355" />
+      <entry key="M15" value="3.595511318227578" />
+      <entry key="M30" value="3.7725493085006936" />
+      <entry key="H1" value="3.8791476715043043" />
+      <entry key="H2" value="3.9376770776126353" />
+      <entry key="H4" value="3.968349160431103" />
+      <entry key="D1" value="3.994655562013645" />
+      <entry key="W1" value="3.9992347941622697" />
+    </decayedShown>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -52,16 +117,58 @@
     &quot;Application.TournamentApplication.executor&quot;: &quot;Run&quot;,
     &quot;Application.UserInfoApplication.executor&quot;: &quot;Run&quot;,
     &quot;Application.WalletApplication.executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ApiGatewayApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.UserInfoApplication.executor&quot;: &quot;Run&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;full.screen.before.presentation.mode&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main-bend&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/gokul/MavenProject&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/Downloads/rummy-main-bend/fun-bend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.RoomCreationApplication">
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+    <option name="configurationStatuses">
+      <map>
+        <entry key="SpringBootApplicationConfigurationType">
+          <value>
+            <map>
+              <entry key="ApiGatewayApplication" value="STOPPED" />
+              <entry key="EurekaServerApplication" value="STOPPED" />
+              <entry key="UserInfoApplication" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="RunManager">
     <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.sadetech.api_gateway.ApiGatewayApplication" />
       <module name="api-gateway" />
@@ -156,12 +263,116 @@
       <option name="filePath" />
       <method v="2" />
     </configuration>
+    <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="api-gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.api_gateway.ApiGatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ChatbotApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="chatbot" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.chatbot.ChatbotApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="eureka-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.eureka_server.EurekaServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FriendRequestApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="friend-request" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.friend_request.FriendRequestApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GameEngineApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="game_engine" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.game_engine.GameEngineApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="KycVerificationApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="kyc-verification" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.kyc_verification.KycVerificationApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MissionsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="missions" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.missions.MissionsApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoomCreationApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="room-creation" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.room_creation.RoomCreationApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RummyValidatorApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="rummy-validator" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.rummy_validator.RummyValidatorApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SettingsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="settings" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.settings.SettingsApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserInfoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="user-info" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.user_info.UserInfoApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WalletApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="wallet" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.wallet.WalletApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WebsocketApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="websocket" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.sadetech.websocket.WebsocketApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
-      <item itemvalue="Application.GameEngineApplication" />
-      <item itemvalue="Application.WalletApplication" />
-      <item itemvalue="Application.UserInfoApplication" />
       <item itemvalue="Application.ApiGatewayApplication" />
+      <item itemvalue="Application.GameEngineApplication" />
       <item itemvalue="Application.RoomCreationApplication" />
+      <item itemvalue="Application.UserInfoApplication" />
+      <item itemvalue="Application.WalletApplication" />
+      <item itemvalue="Spring Boot.ApiGatewayApplication" />
+      <item itemvalue="Spring Boot.ChatbotApplication" />
+      <item itemvalue="Spring Boot.EurekaServerApplication" />
+      <item itemvalue="Spring Boot.FriendRequestApplication" />
+      <item itemvalue="Spring Boot.GameEngineApplication" />
+      <item itemvalue="Spring Boot.KycVerificationApplication" />
+      <item itemvalue="Spring Boot.MissionsApplication" />
+      <item itemvalue="Spring Boot.RoomCreationApplication" />
+      <item itemvalue="Spring Boot.RummyValidatorApplication" />
+      <item itemvalue="Spring Boot.SettingsApplication" />
+      <item itemvalue="Spring Boot.UserInfoApplication" />
+      <item itemvalue="Spring Boot.WalletApplication" />
+      <item itemvalue="Spring Boot.WebsocketApplication" />
     </list>
     <recent_temporary>
       <list>
@@ -173,6 +384,14 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-63390994e64e-intellij.indexing.shared.core-IU-262.8665.337" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.8665.337" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -183,5 +402,8 @@
       <updated>1734683736600</updated>
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>

@@ -7,13 +7,16 @@ spring:
       uri: mongodb+srv://sreemanvk:Msg2709@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
       database: player_settings
 
-
 server:
   port: 7082
 
 eureka:
   client:
     service-url:
-      defaultZone: https://rummy-eureka-v1.onrender.com/eureka/
+      defaultZone: https://rummy-eureka-v1-35lo.onrender.com/eureka/
     fetch-registry: true
     register-with-eureka: true
+  instance:
+    instance-id: ${spring.application.name}:${random.value}
+    hostname: rummy-settings-v1-x52j.onrender.com
+    prefer-ip-address: false
