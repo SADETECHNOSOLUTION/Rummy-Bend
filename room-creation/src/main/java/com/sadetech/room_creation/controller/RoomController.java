@@ -156,6 +156,33 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(rooms);
     }
 
+    @PostMapping("/update-score")
+    public ResponseEntity<Room> updatePlayerScore(
+            @RequestParam String roomId,
+            @RequestParam String playerId,
+            @RequestBody List<List<Map<String, String>>> cardGroups) {
+        Room updatedRoom = roomService.updatePlayerCurrentScore(roomId, playerId, cardGroups);
+        return ResponseEntity.ok(updatedRoom);
+    }
+
+    @PutMapping("/trigger-declare/{roomId}")
+    public ResponseEntity<?> triggerDeclare(@PathVariable String roomId) {
+        Room room = roomService.triggerDeclareMode(roomId);
+        return ResponseEntity.ok(room);
+    }
+
+    @PostMapping("/{roomId}/calculate-and-update-scores")
+    public ResponseEntity<?> calculateAndUpdateAllPlayerScores(
+            @PathVariable String roomId,
+            @RequestBody Map<String, Map<String, List<Map<String, Object>>>> playerCardMap) {
+
+        Room updatedRoom = roomService.calculateAndSaveAllPlayerScores(roomId, playerCardMap);
+        return ResponseEntity.ok(Map.of(
+                "message", "Player scores successfully calculated and updated.",
+                "room", updatedRoom
+        ));
+    }
+
     @PostMapping("/join-or-create-room")
     public ResponseEntity<?> joinOrCreateRoom(
             @RequestParam int roomSize,
@@ -255,7 +282,7 @@ public class RoomController {
     @PutMapping("/update-current-turn/{roomId}")
     public ResponseEntity<Room> updatePlayerTurn(@PathVariable String roomId, @RequestParam String playerId){
         Room room = roomService.updateCurrentPlayerStatus(roomId, playerId);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(room);
+        return ResponseEntity.status(HttpStatus.OK).body(room);
     }
 
     @GetMapping("/player-games")

@@ -40,12 +40,17 @@ public class SecurityConfig {
                                 "/api/user/register",
                                 "/api/user/otp",
                                 "/api/user/login",
+                                "/api/user/login/otp",
                                 "/api/user/refresh",
                                 "/api/user/get-all-user",
+                                "/api/user/forgot-password",       // <--- ADD THIS
+                                "/api/user/reset-password",
                                 "/api/user/send-otp-mobile",
                                 "/api/user/register-mobile",
                                 "/api/user/verify-otp-register",
                                 "/api/user/verify-otp",
+                                "/api/user/get-user/**",
+                                "/api/user/update-chips/**",
                                 // ... (keep all your other existing paths)
                                 "/api/user/verify-otp-register-with-referral"
                         ).permitAll()

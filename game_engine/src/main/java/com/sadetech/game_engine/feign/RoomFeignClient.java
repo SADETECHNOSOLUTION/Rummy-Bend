@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
-// @FeignClient(name = "room-creation")
+ @FeignClient(name = "room-creation")
 public interface RoomFeignClient {
     @GetMapping("/api/room/get-detail/{roomId}")
     Optional<RoomDTO> getRoomDetails(@PathVariable String roomId);

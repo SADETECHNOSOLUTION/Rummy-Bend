@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 @SpringBootApplication
 @EnableMongoAuditing
 @EnableDiscoveryClient
-// @EnableFeignClients
+ @EnableFeignClients
 public class GameEngineApplication {
 
 	public static void main(String[] args) {

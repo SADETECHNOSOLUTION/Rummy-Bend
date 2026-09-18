@@ -4,8 +4,15 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb+srv://sreemanvk:Msg2709@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
+      uri: mongodb+srv://sreemanvk:Sree2001@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
       database: validator_service
+
+logging:
+  file:
+    name: logs/rummy-validator.log
+  pattern:
+    level: "%5p [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}]"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}] [%thread] %logger{36} - %msg%n"
 
 
 server:
@@ -14,10 +21,10 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: https://rummy-eureka-v1-35lo.onrender.com/eureka/
+      defaultZone: http://localhost:8761/eureka/
     fetch-registry: true
     register-with-eureka: true
-  instance:
-    instance-id: ${spring.application.name}:${random.value}
-    prefer-ip-address: false
-    hostname: rummy-validation-v1-za7b.onrender.com
+#  instance:
+#    instance-id: ${spring.application.name}:${random.value}
+#    prefer-ip-address: false
+#    hostname: rummy-validation-v1-za7b.onrender.com

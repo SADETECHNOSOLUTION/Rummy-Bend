@@ -4,16 +4,16 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb+srv://sreemanvk:Msg2709@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
+      uri: mongodb+srv://sreemanvk:Sree2001@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
       database: points_allocation
 
-management:
-  tracing:
-    sampling:
-      probability: 1.0
-  zipkin:
-    tracing:
-      endpoint: "http://localhost:9411/api/v2/spans"
+#management:
+#  tracing:
+#    sampling:
+#      probability: 1.0
+#  zipkin:
+#    tracing:
+#      endpoint: "http://localhost:9411/api/v2/spans"
 
 logging:
   pattern:
@@ -26,22 +26,22 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8762/eureka
+      defaultZone: http://localhost:8761/eureka
     fetch-registry: true
     register-with-eureka: true
 
-  level:
-    com.sadetech.point_allocation: DEBUG
-    org.springframework: ERROR
-    feign: DEBUG
-    org.hibernate: ERROR
-    org.springframework.web: DEBUG
-    org.springframework.http: DEBUG
-    com.sadetech.point_allocation.client: DEBUG
-    org.springframework.cloud.openfeign: DEBUG
-
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+#  level:
+#    com.sadetech.point_allocation: DEBUG
+#    org.springframework: ERROR
+#    feign: DEBUG
+#    org.hibernate: ERROR
+#    org.springframework.web: DEBUG
+#    org.springframework.http: DEBUG
+#    com.sadetech.point_allocation.client: DEBUG
+#    org.springframework.cloud.openfeign: DEBUG
+#
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
 feign:
   client:

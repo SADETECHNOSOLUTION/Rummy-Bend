@@ -1,10 +1,12 @@
 package com.sadetech.game_engine.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sadetech.game_engine.dto.CardDistributionResponse;
 import com.sadetech.game_engine.dto.PlayerDetails;
 import com.sadetech.game_engine.dto.RankPlayersDto;
 import com.sadetech.game_engine.dto.RoomDTO;
 import com.sadetech.game_engine.exception.*;
+import com.sadetech.game_engine.feign.RoomFeignClient;
 import com.sadetech.game_engine.model.Card;
 import com.sadetech.game_engine.model.Room;
 import com.sadetech.game_engine.repository.CardRepository;
@@ -12,6 +14,7 @@ import com.sadetech.game_engine.repository.RoomRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -26,6 +29,12 @@ public class CardService {
     private RoomRepository roomRepository; // ADD THIS: This fixes the "variable roomRepository" errors
 
     @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private RoomFeignClient roomFeignClient;
+
+    @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
@@ -38,6 +47,11 @@ public class CardService {
     public Card initializeDeckForSixPlayer(String roomId) {
         logger.info("Initializing deck for 6-player room: {}", roomId);
 
+        Optional<Card> existingCard = cardRepository.findFirstByRoomId(roomId);
+        if (existingCard.isPresent()) {
+            return existingCard.get();
+        }
+
         Map<String, Object> result = createDeckForSixPlayer();
         List<Map<String, String>> deck = (List<Map<String, String>>) result.get("deck");
         String jokerCard = (String) result.get("selectedJoker");
@@ -46,8 +60,16 @@ public class CardService {
             throw new CardGeneratorFailedException("Deck creation failed. No cards generated for room: " + roomId);
         }
 
-        Card card = new Card(null, deck, jokerCard, roomId, new HashMap<>(), deck, new HashMap<>(), new ArrayList<>(), null, new HashMap<>(), new HashMap<>(),new ArrayList<>());
-
+        Card card = new Card();
+        card.setRoomId(roomId);
+        card.setRemainingCards(deck);
+        card.setJokerCard(jokerCard);
+        card.setPlayerCards(new HashMap<>());
+        card.setDiscardedCards(new HashMap<>());
+        card.setAllDiscardedCards(new ArrayList<>());
+        card.setPlayerSteps(new HashMap<>());
+        card.setGroupedCardsBySuit(new HashMap<>());
+        card.setOrderPlayersByRank(new ArrayList<>());
         logger.info("Saving card to database: {}", card);
         Card savedCard = cardRepository.save(card);
         logger.info("Card saved successfully: {}", savedCard);
@@ -56,6 +78,11 @@ public class CardService {
     }
 
     public Card initializeDeckForNinePlayer(String roomId){
+        Optional<Card> existingCard = cardRepository.findFirstByRoomId(roomId);
+        if (existingCard.isPresent()) {
+            return existingCard.get();
+        }
+
         Map<String,Object> result = createDeckForNinePlayer();
         String jokerCard =(String) result.get("selectedJoker");
         List<Map<String, String>> deck = (List<Map<String, String>>) result.get("deck");
@@ -64,8 +91,16 @@ public class CardService {
             throw new CardGeneratorFailedException("Deck creation failed for 9-player room: " + roomId);
         }
 
-        Card card = new Card(null,deck,jokerCard,roomId,null,null,null,null,null,null,null,new ArrayList<>());
-        return cardRepository.save(card);
+        Card card = new Card();
+        card.setRoomId(roomId);
+        card.setRemainingCards(deck);
+        card.setJokerCard(jokerCard);
+        card.setPlayerCards(new HashMap<>());
+        card.setDiscardedCards(new HashMap<>());
+        card.setAllDiscardedCards(new ArrayList<>());
+        card.setPlayerSteps(new HashMap<>());
+        card.setGroupedCardsBySuit(new HashMap<>());
+        card.setOrderPlayersByRank(new ArrayList<>());        return cardRepository.save(card);
     }
 
     private Map<String, Object> createDeckForSixPlayer() {
@@ -194,7 +229,7 @@ public CardDistributionResponse getCardDetails(String roomId) {
 
     // 2. REPLACED FEIGN CALL: Query the database directly for Room details
     // Assuming you have access to the Room collection/repository in this service
-    Room room = roomRepository.findByRoomId(card.getRoomId())
+    Room room = roomRepository.findRoomById(card.getRoomId())
             .orElseThrow(() -> new RoomNotFoundException("No room found"));
 
     // Use the Room entity directly instead of RoomDTO
@@ -238,72 +273,80 @@ public CardDistributionResponse getCardDetails(String roomId) {
     );
 }
 
-public RankPlayersDto rankPlayersAndGetCards(String roomId) {
-    // 1. Fetch the Card object by room ID
-    Card card = cardRepository.findByRoomId(roomId);
+    public RankPlayersDto rankPlayersAndGetCards(String roomId) {
+        // 1. Fetch the Card object by room ID
+        Card card = cardRepository.findByRoomId(roomId);
 
-    if (card == null) {
-        throw new CardNotFoundException("No card found for the room ID: " + roomId);
-    }
-
-    // 2. Get a player cards map and validate
-    Map<String, List<Map<String, String>>> playerCards = card.getPlayerCards();
-    if (playerCards == null || playerCards.isEmpty()) {
-        throw new PlayerCardNotFoundException("No player cards found for the room ID: " + roomId);
-    }
-
-    List<Map.Entry<String, String>> playerCardEntries = new ArrayList<>();
-    Map<String, String> playerZeroIndexCards = new HashMap<>();
-
-    for (Map.Entry<String, List<Map<String, String>>> entry : playerCards.entrySet()) {
-        String playerId = entry.getKey();
-        List<Map<String, String>> cards = entry.getValue();
-
-        if (cards != null && !cards.isEmpty()) {
-            String firstCard = cards.get(0).get("card"); 
-            playerCardEntries.add(Map.entry(playerId, firstCard));
-            playerZeroIndexCards.put(playerId, firstCard); 
+        if (card == null) {
+            throw new CardNotFoundException("No card found for the room ID: " + roomId);
         }
-    }
 
-    // 3. Sort players based on card rank and suit
-    playerCardEntries.sort((entry1, entry2) -> {
-        int rankComparison = compareCards(entry2.getValue(), entry1.getValue());
-        if (rankComparison != 0) {
-            return rankComparison;
+        // 2. Get a player cards map and validate
+        Map<String, List<Map<String, String>>> playerCards = card.getPlayerCards();
+        if (playerCards == null || playerCards.isEmpty()) {
+            throw new PlayerCardNotFoundException("No player cards found for the room ID: " + roomId);
         }
-        return getCardSuit(entry2.getValue()) - getCardSuit(entry1.getValue());
-    });
 
-    String firstRankPlayerId = !playerCardEntries.isEmpty() ? playerCardEntries.get(0).getKey() : null;
+        List<Map.Entry<String, String>> playerCardEntries = new ArrayList<>();
+        Map<String, String> playerZeroIndexCards = new HashMap<>();
 
-    // 4. Prepare ranking order
-    List<String> ranking = new ArrayList<>();
-    String[] ranks = { "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth" };
-    List<String> orderPlayerByRank = new ArrayList<>();
-    for (int i = 0; i < playerCardEntries.size(); i++) {
-        String rank = i < ranks.length ? ranks[i] : (i + 1) + "th";
-        String playerId = playerCardEntries.get(i).getKey();
-        ranking.add(rank + ": " + playerId);
-        orderPlayerByRank.add(playerId);
+        for (Map.Entry<String, List<Map<String, String>>> entry : playerCards.entrySet()) {
+            String playerId = entry.getKey();
+            List<Map<String, String>> cards = entry.getValue();
+
+            if (cards != null && !cards.isEmpty()) {
+                String firstCard = cards.get(0).get("card");
+                playerCardEntries.add(Map.entry(playerId, firstCard));
+                playerZeroIndexCards.put(playerId, firstCard);
+            }
+        }
+
+        // 3. Sort players based on card rank and suit
+        playerCardEntries.sort((entry1, entry2) -> {
+            int rankComparison = compareCards(entry2.getValue(), entry1.getValue());
+            if (rankComparison != 0) {
+                return rankComparison;
+            }
+            return getCardSuit(entry2.getValue()) - getCardSuit(entry1.getValue());
+        });
+
+        String firstRankPlayerId = !playerCardEntries.isEmpty() ? playerCardEntries.get(0).getKey() : null;
+
+        // 4. Prepare ranking order
+        List<String> ranking = new ArrayList<>();
+        String[] ranks = { "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth" };
+        List<String> orderPlayerByRank = new ArrayList<>();
+        for (int i = 0; i < playerCardEntries.size(); i++) {
+            String rank = i < ranks.length ? ranks[i] : (i + 1) + "th";
+            String playerId = playerCardEntries.get(i).getKey();
+            ranking.add(rank + ": " + playerId);
+            orderPlayerByRank.add(playerId);
+        }
+
+        RankPlayersDto result = new RankPlayersDto(ranking, playerZeroIndexCards, orderPlayerByRank);
+
+        // 5. Update the Card document locally
+        card.setOrderPlayersByRank(orderPlayerByRank);
+        cardRepository.save(card);
+
+        // 6. DIRECT DATABASE UPDATE: Update the Room entity directly instead of Feign
+        if (firstRankPlayerId != null) {
+            try {
+                Room room = roomRepository.findRoomById(roomId)
+                        .orElseThrow(() -> new RoomNotFoundException("No room found"));
+
+                room.setCurrentTurn(firstRankPlayerId);
+                roomRepository.save(room);
+
+                logger.info("🔄 Turn successfully set in database for room {} to player: {}", roomId, firstRankPlayerId);
+            } catch (Exception e) {
+                System.err.println("❌ DIRECT ROOM TURN UPDATE FAILED:");
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
-
-    RankPlayersDto result = new RankPlayersDto(ranking, playerZeroIndexCards, orderPlayerByRank);
-
-    // 5. Update the Card document locally
-    card.setOrderPlayersByRank(orderPlayerByRank);
-    cardRepository.save(card);
-
-    // 6. REPLACED FEIGN CALL: Update the Room entity directly
-    Room room = roomRepository.findByRoomId(roomId)
-            .orElseThrow(() -> new RoomNotFoundException("No room found for ID: " + roomId));
-    
-    room.setCurrentTurn(firstRankPlayerId); // Set the player who won the toss/rank
-    roomRepository.save(room);
-
-    return result;
-}
-    // Helper method to compare two cards by rank
+        // Helper method to compare two cards by rank
     private int compareCards(String card1, String card2) {
         return getCardRank(card1) - getCardRank(card2);
     }
@@ -353,7 +396,7 @@ public Card getCardDetailsByRoomId(String roomId) {
     }
 
     // REPLACED FEIGN CALL: Check the database directly to see if the room exists
-    if (!roomRepository.existsByRoomId(roomId)) {
+    if (!roomRepository.existsById(roomId)) {
         throw new RoomNotFoundException("No room found with ID: " + roomId);
     }
 
@@ -427,10 +470,21 @@ public Card updatePlayerCardOnHisTurn(String roomId, String playerId, Boolean pi
 
     // 1. Fetch current card and room state directly from DB
     Card existingCard = cardRepository.findByRoomId(roomId);
-    
+
     // REPLACED FEIGN: Direct DB lookup for room status/turn validation
-    Room room = roomRepository.findByRoomId(roomId)
+    Room room = roomRepository.findRoomById(roomId)
             .orElseThrow(() -> new RoomNotFoundException("No room found"));
+
+    if (room.getCurrentTurn() == null) {
+        if (room.getPlayerDetails() != null && !room.getPlayerDetails().isEmpty()) {
+            String defaultPlayerId = room.getPlayerDetails().get(0).getPlayerId();
+            room.setCurrentTurn(defaultPlayerId);
+            roomRepository.save(room);
+            logger.warn("⚠️ currentTurn was null for roomId: {}. Automatically defaulted to first player: {}", roomId, defaultPlayerId);
+        } else {
+            throw new IllegalStateException("Game has not started: No players found in the room.");
+        }
+    }
 
     // 2. Security and State Validations
     if(!playerId.equals(extractedId)){
@@ -508,23 +562,38 @@ public Card updatePlayerCardOnHisTurn(String roomId, String playerId, Boolean pi
         allDiscardedCards.add(cardToDiscardMap);
     }
 
-    // 7. Turn Management Logic
+// 7. Turn Management Logic: Rotate and persist turn safely
     List<String> playerRanking = existingCard.getOrderPlayersByRank();
-    if(pickFromDiscarded == null){ // Handling turn skip or specific turn-end logic
+    if (cardToDiscard != null && !cardToDiscard.isEmpty()) {
         if (playerRanking != null && playerRanking.contains(playerId)) {
             int nextIndex = (playerRanking.indexOf(playerId) + 1) % playerRanking.size();
             String changeTurn = playerRanking.get(nextIndex);
-            
-            // REPLACED FEIGN: Update Room currentTurn directly in DB
-            room.setCurrentTurn(changeTurn);
-            roomRepository.save(room);
+
+            // 🚀 SAFE PARTIAL UPDATE: Target only the currentTurn field via MongoTemplate
+            try {
+                org.springframework.data.mongodb.core.query.Query query =
+                        new org.springframework.data.mongodb.core.query.Query(org.springframework.data.mongodb.core.query.Criteria.where("_id").is(roomId));
+                org.springframework.data.mongodb.core.query.Update update =
+                        new org.springframework.data.mongodb.core.query.Update().set("currentTurn", changeTurn);
+
+                // Assuming mongoTemplate is already autowired in your CardService class
+                mongoTemplate.updateFirst(query, update, Room.class);
+                logger.info("🔄 Turn successfully rotated and saved safely via MongoTemplate to: {}", changeTurn);
+            } catch (Exception e) {
+                logger.error("❌ Failed to update room turn safely: {}", e.getMessage());
+            }
         }
     }
-
     // 8. Final Save and Broadcast
     cardRepository.save(existingCard);
     messagingTemplate.convertAndSend("/topic/game/" + roomId, existingCard);
-    
+    try {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String cardJsonPayload = objectMapper.writeValueAsString(existingCard);
+        logger.info("📡 Successfully broadcasted card state to room: {}", roomId);
+    } catch (Exception e) {
+        logger.error("❌ Failed to broadcast card state via WebSocket: {}", e.getMessage());
+    }
     return existingCard;
 }
 

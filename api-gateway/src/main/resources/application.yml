@@ -3,9 +3,9 @@ spring:
     name: api-gateway
 
   data:      # <--- Make sure 'data' is here!
-#    redis:
-#      url: ${REDIS_URL:redis://localhost:6379}
-
+    redis:
+        host: localhost
+        port: 6379
   cloud:
     loadbalancer:
       use-raw-hostname-in-service-instance: false 
@@ -43,7 +43,7 @@ spring:
           #       key-resolver: "#{@combinedKeyResolver}"
 
         - id: game-engine
-          uri: lb://GAME-ENGINE
+          uri: http://localhost:7072
           predicates:
             - Path=/api/cards/**
         #   filters:
@@ -67,7 +67,7 @@ spring:
         #         key-resolver: "#{@combinedKeyResolver}"
 
         - id: rummy-validator
-          uri: lb://RUMMY-VALIDATOR
+          uri: http://localhost:7074
           predicates:
             - Path=/api/rummy/**
           # filters:
@@ -79,7 +79,7 @@ spring:
           #       key-resolver: "#{@combinedKeyResolver}"
 
         - id: room-creation
-          uri: lb://ROOM-CREATION
+          uri: http://localhost:8080
           predicates:
             - Path=/api/room/**
         #   filters:
@@ -90,10 +90,10 @@ spring:
         #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
         #         key-resolver: "#{@combinedKeyResolver}"
 
-        # - id: point-allocation
-        #   uri: lb://POINT-ALLOCATION
-        #   predicates:
-        #     - Path=/api/point/**
+        - id: point-allocation
+          uri: lb://POINT-ALLOCATION
+          predicates:
+            - Path=/api/point/**
         #   filters:
         #     - name: JwtAuthFilter
         #     - name: RequestRateLimiter
@@ -138,10 +138,10 @@ spring:
         #         redis-rate-limiter.burstCapacity: 10  # Allows burst requests
         #         key-resolver: "#{@combinedKeyResolver}"
 
-        # - id: websocket
-        #   uri: ws://WEBSOCKET
-        #   predicates:
-        #     - Path=/ws/player-status
+        - id: websocket
+          uri: ws://WEBSOCKET
+          predicates:
+            - Path=/ws/player-status
         #   filters:
         #     - name: JwtAuthFilter
         #     - name: RequestRateLimiter
@@ -189,16 +189,16 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: https://rummy-eureka-v1.onrender.com/eureka/
-    fetch-registry: true
-    register-with-eureka: true
-    instance:
-      # Forces the public identity in Eureka
-      instance-id: ${spring.application.name}:${random.value}
-      hostname: rummy-apigateway-v1
-      prefer-ip-address: false
-      # Required for Render to route properly
-      non-secure-port: ${server.port}
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: false
+    register-with-eureka: false
+#    instance:
+#      # Forces the public identity in Eureka
+#      instance-id: ${spring.application.name}:${random.value}
+#      hostname: rummy-apigateway-v1
+#      prefer-ip-address: false
+#      # Required for Render to route properly
+#      non-secure-port: ${server.port}
     
 server:
   port: ${PORT:7070}

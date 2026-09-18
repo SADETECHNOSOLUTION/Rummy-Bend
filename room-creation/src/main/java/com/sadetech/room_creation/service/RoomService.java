@@ -14,10 +14,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 // import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -31,6 +35,12 @@ public class RoomService {
 
     @Autowired
     private RoomRepository roomRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private WebSocketClient webSocketClient;
 
     @Autowired
     private UserFeignClient userFeignClient;
@@ -193,6 +203,34 @@ public class RoomService {
         };
     }
 
+    public Room updatePlayerCurrentScore(String roomId, String playerId, List<List<Map<String, String>>> cardGroups) {
+        if (roomId == null || roomId.isBlank() || playerId == null || playerId.isBlank()) {
+            throw new IllegalArgumentException("Room ID and Player ID must not be empty.");
+        }
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException("No data found for the room"));
+
+        if (room.getPlayerDetails() == null) {
+            throw new IllegalStateException("No players found in this room.");
+        }
+
+        boolean playerFound = false;
+        for (PlayerDetails player : room.getPlayerDetails()) {
+            if (player.getPlayerId().equals(playerId)) {
+                int calculatedScore = calculateCardPoints(cardGroups);
+                player.setCurrentScore(calculatedScore);
+                playerFound = true;
+                break;
+            }
+        }
+
+        if (!playerFound) {
+            throw new PlayerNotFoundException("Player not found in the room's player details.");
+        }
+
+        return roomRepository.save(room);
+    }
 
     private Room createNewRoom(int roomSize, String roomType, String gameMode, String gameStatus, double pointValue, int issuedPoint,
                                int totalRounds, String entryType, double entryPrice, String visibility, RequestDTO requestDTO, String extractedId) {
@@ -300,7 +338,7 @@ public class RoomService {
         }
 
         // Add player to the list
-        room.getPlayerDetails().add(new PlayerDetails(playerId, room.getIssuedPoint()));
+        room.getPlayerDetails().add(new PlayerDetails(playerId, room.getIssuedPoint(), 0));
 
         // Update player count
         room.setPlayerCount(room.getPlayerDetails().size());
@@ -385,7 +423,7 @@ public class RoomService {
 
         // Add the player to the list if there's space
         if (room.getPlayerDetails().size() < 6) {
-            room.getPlayerDetails().add(new PlayerDetails(playerId, room.getIssuedPoint()));
+            room.getPlayerDetails().add(new PlayerDetails(playerId, room.getIssuedPoint(),0));
         } else {
             throw new IllegalStateException("No available slot for the player in this room.");
         }
@@ -525,7 +563,8 @@ public class RoomService {
     }
 
     @Async
-    private void scheduleGameStart(Room room) {
+    public void scheduleGameStart(Room room) {
+
         CompletableFuture.runAsync(() -> {
             try {
                 logger.info("Scheduling game start for room: {}", room.getRoomId());
@@ -569,6 +608,7 @@ public class RoomService {
     }
 
     private void scheduleGameStartAndDebitEntryFee(Room room) {
+
         CompletableFuture.runAsync(() -> {
             try {
                 logger.info("Executing scheduleGameStartAndDebitEntryFee for room: {}", room.getRoomId());
@@ -577,7 +617,6 @@ public class RoomService {
                 for (PlayerDetails playerDetails : room.getPlayerDetails()) {
                     String playerId = playerDetails.getPlayerId();
                     logger.info("Processing player: {}", playerId);
-
                     RequestDTO player = userFeignClient.getDetails(playerId)
                             .orElseThrow(() -> new PlayerNotFoundException("No player found for the player id"));
                     logger.info("User feign client get details output {}", player.getPlayerId());
@@ -636,6 +675,12 @@ public class RoomService {
                 roomRepository.save(room);
                 logger.info("Game set to 'Ongoing' for room: {}", room.getRoomId());
 
+                try {
+                    webSocketClient.broadcastToRoom(room.getRoomId(), room.getGameStatus());
+                    logger.info("Successfully triggered WebSocket broadcast for room: {}", room.getRoomId());
+                } catch (Exception e) {
+                    logger.error("Failed to trigger WebSocket broadcast: {}", e.getMessage());
+                }
             } catch (Exception e) {
                 logger.error("Error in scheduleGameStartAndDebitEntryFee: {}", e.getMessage());
             }
@@ -683,6 +728,68 @@ public class RoomService {
             logger.warn("Room is not in 'Ongoing' state. Current state: {}", room.getGameStatus());
         }
         return "Deck initialized successfully";
+    }
+
+    public Room calculateAndSaveAllPlayerScores(String roomId, Map<String, Map<String, List<Map<String, Object>>>> playerCardMap) {
+        if (roomId == null || roomId.isBlank()) {
+            throw new IllegalArgumentException("Room ID must not be empty.");
+        }
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException("No room found with ID: " + roomId));
+
+        if (room.getPlayerDetails() == null || room.getPlayerDetails().isEmpty()) {
+            throw new IllegalStateException("No players found in this room.");
+        }
+
+        for (Map.Entry<String, Map<String, List<Map<String, Object>>>> playerEntry : playerCardMap.entrySet()) {
+            String playerId = playerEntry.getKey();
+            Map<String, List<Map<String, Object>>> suitGroups = playerEntry.getValue();
+
+            int totalPlayerPoints = 0;
+
+            for (Map.Entry<String, List<Map<String, Object>>> suitEntry : suitGroups.entrySet()) {
+                List<Map<String, Object>> cards = suitEntry.getValue();
+                if (cards == null) continue;
+
+                for (Map<String, Object> cardObj : cards) {
+                    Object cardVal = cardObj.get("card");
+                    if (cardVal != null) {
+                        totalPlayerPoints += parseCardPointValue(cardVal.toString());
+                    }
+                }
+            }
+
+            for (PlayerDetails playerDetail : room.getPlayerDetails()) {
+                if (playerDetail.getPlayerId().equals(playerId)) {
+                    playerDetail.setCurrentScore(totalPlayerPoints);
+                    break;
+                }
+            }
+        }
+
+        return roomRepository.save(room);
+    }
+
+    private int parseCardPointValue(String cardStr) {
+        if (cardStr == null || cardStr.isBlank()) return 0;
+        String upper = cardStr.toUpperCase();
+
+        if (upper.contains("JOKER")) {
+            return 0;
+        }
+
+        String rank = upper.split(" ")[0];
+
+        if (rank.equals("K") || rank.equals("Q") || rank.equals("J") || rank.equals("A") || rank.equals("10")) {
+            return 10;
+        } else {
+            try {
+                return Integer.parseInt(rank);
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
     }
 
     public Room getDetailsByRoomId(String roomId){
@@ -1203,6 +1310,50 @@ public class RoomService {
     }
 
 
+    public int calculateCardPoints(List<List<Map<String, String>>> cardGroups) {
+        if (cardGroups == null) return 0;
+
+        int totalPoints = 0;
+        for (List<Map<String, String>> group : cardGroups) {
+            for (Map<String, String> card : group) {
+                String value = card.get("value");
+                if (value != null) {
+                    String upperVal = value.toUpperCase();
+                    if (upperVal.equals("K") || upperVal.equals("Q") || upperVal.equals("J") || upperVal.equals("A") || upperVal.equals("10")) {
+                        totalPoints += 10;
+                    } else {
+                        try {
+                            totalPoints += Integer.parseInt(upperVal);
+                        } catch (NumberFormatException e) {
+                            totalPoints += 0;
+                        }
+                    }
+                }
+            }
+        }
+        return totalPoints;
+    }
+
+
+
+    public Room updatePlayerCardsAndScore(String roomId, String playerId, List<List<Map<String, String>>> newCardGroups) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+
+        for (PlayerDetails player : room.getPlayerDetails()) {
+            if (player.getPlayerId().equals(playerId)) {
+                // 1. Calculate points automatically on the backend
+                int calculatedScore = calculateCardPoints(newCardGroups);
+
+                // 2. Update the live score field directly in MongoDB data model
+                player.setCurrentScore(calculatedScore);
+                break;
+            }
+        }
+
+        return roomRepository.save(room);
+    }
+
     public Room updateRoomForNinePlayerForTournament(String roomId, List<String> playerIds) {
 
         if (roomId == null || roomId.isBlank()) {
@@ -1236,7 +1387,7 @@ public class RoomService {
 
 
             if ( uniquePlayerIds.add(playerId)) {
-                playerDetailsList.add(new PlayerDetails(playerId, room.getIssuedPoint())); // Default issued points as 0, modify if needed
+                playerDetailsList.add(new PlayerDetails(playerId, room.getIssuedPoint(),0)); // Default issued points as 0, modify if needed
             }
         }
 
@@ -1248,6 +1399,13 @@ public class RoomService {
             scheduleGameStart(room);
         }
 
+        return roomRepository.save(room);
+    }
+
+    public Room triggerDeclareMode(String roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found with ID: " + roomId));
+        room.setDeclareModeActive(true);
         return roomRepository.save(room);
     }
 
@@ -1279,17 +1437,17 @@ public class RoomService {
         List<Room> roomList = roomRepository.findAll(pageRequest).getContent();
 
         // Filter:
-        // - Only rooms created in last 7 days
+        // - Only rooms created in last 7 days (parsed from string)
         // - That include the given player
         return roomList.stream()
                 .filter(room -> room.getRoomCreatedAt() != null &&
-                        room.getRoomCreatedAt().isAfter(sevenDaysAgo) &&
+                        !room.getRoomCreatedAt().isBlank() &&
+                        LocalDateTime.parse(room.getRoomCreatedAt()).isAfter(sevenDaysAgo) &&
                         room.getPlayerDetails() != null &&
                         room.getPlayerDetails().stream()
                                 .anyMatch(player -> player.getPlayerId().equals(requestDTO.getPlayerId())))
                 .collect(Collectors.toList());
     }
-
 
 
     public Room getRoomAndUpdateLastGamePlayer(String roomId, String playerId, String extractedId) {
@@ -1463,55 +1621,44 @@ public class RoomService {
     }
 
     public List<Room> getRoomsByPlayerIdAndGameStatus(String playerId, String gameStatus) {
-        try {
-
-            if (playerId == null || playerId.isBlank()) {
-                throw new IllegalArgumentException("Player id should not be empty.");
-            }
-
-            playerId = playerId.trim().replaceAll("\\s+", "");
-
-            if (!playerId.matches("^[a-fA-F0-9]{24}$")) {
-                throw new IllegalArgumentException("Player ID must be a valid 24-character hexadecimal string.");
-            }
-
-            if(!"Waiting".equalsIgnoreCase(gameStatus) &&
-                    !"Matchmaking".equalsIgnoreCase(gameStatus) &&
-                    !"Tossing".equalsIgnoreCase(gameStatus) &&
-                    !"Started".equalsIgnoreCase(gameStatus) &&
-                    !"Ongoing".equalsIgnoreCase(gameStatus) &&
-                    !"Finished".equalsIgnoreCase(gameStatus)){
-                throw new InvalidGameStatusException("Invalid game status.");
-            }
-
-            List<Room> rooms = roomRepository.findByGameStatus(gameStatus);
-            if(rooms.isEmpty()){
-                throw new ResourceNotFoundException("No game room found");
-            }
-
-
-            // Fetch player details to validate existence
-            RequestDTO requestDTO = userFeignClient.getDetails(playerId)
-                    .orElseThrow(() -> new PlayerNotFoundException("No player found for the given player ID"));
-
-            // Fetch all rooms with the given game status
-            List<Room> roomList = roomRepository.findByGameStatus(gameStatus);
-
-            // Filter rooms where the player exists in the playerDetails list
-            List<Room> filteredRooms = roomList.stream()
-                    .filter(room -> room.getPlayerDetails() != null &&
-                            room.getPlayerDetails().stream()
-                                    .anyMatch(player -> player.getPlayerId().equals(requestDTO.getPlayerId())))
-                    .collect(Collectors.toList());
-
-            if (filteredRooms.isEmpty()) {
-                throw new ResourceNotFoundException("No room found for the given player ID and game status.");
-            }
-
-            return filteredRooms;
-        } catch (FeignException e) {
-            throw new ServiceUnavailableException("User Service is unavailable, please try again later.");
+        if (playerId == null || playerId.isBlank()) {
+            throw new IllegalArgumentException("Player id should not be empty.");
         }
+
+        playerId = playerId.trim().replaceAll("\\s+", "");
+
+        if (!playerId.matches("^[a-fA-F0-9]{24}$")) {
+            throw new IllegalArgumentException("Player ID must be a valid 24-character hexadecimal string.");
+        }
+
+        if(!"Waiting".equalsIgnoreCase(gameStatus) &&
+                !"Matchmaking".equalsIgnoreCase(gameStatus) &&
+                !"Tossing".equalsIgnoreCase(gameStatus) &&
+                !"Started".equalsIgnoreCase(gameStatus) &&
+                !"Ongoing".equalsIgnoreCase(gameStatus) &&
+                !"Finished".equalsIgnoreCase(gameStatus)){
+            throw new InvalidGameStatusException("Invalid game status.");
+        }
+
+        // Fetch all rooms with the given game status directly from MongoDB
+        List<Room> roomList = roomRepository.findByGameStatus(gameStatus);
+        if(roomList.isEmpty()){
+            throw new ResourceNotFoundException("No game room found");
+        }
+
+        // Filter rooms where the player exists in the playerDetails list locally
+        String finalPlayerId = playerId;
+        List<Room> filteredRooms = roomList.stream()
+                .filter(room -> room.getPlayerDetails() != null &&
+                        room.getPlayerDetails().stream()
+                                .anyMatch(player -> player.getPlayerId().equals(finalPlayerId)))
+                .collect(Collectors.toList());
+
+        if (filteredRooms.isEmpty()) {
+            throw new ResourceNotFoundException("No room found for the given player ID and game status.");
+        }
+
+        return filteredRooms;
     }
 
     public Room getRoomAndUpdatePlayerExitStatus(String roomId, String playerId, String extractedId) {
@@ -1574,14 +1721,11 @@ public class RoomService {
         return rooms;
     }
 
-    public Room updateCurrentPlayerStatus(String roomId, String playerId){
-
+    public Room updateCurrentPlayerStatus(String roomId, String playerId) {
         if (playerId == null || playerId.isBlank()) {
             throw new IllegalArgumentException("Player id should not be empty.");
         }
-
         playerId = playerId.trim().replaceAll("\\s+", "");
-
         if (!playerId.matches("^[a-fA-F0-9]{24}$")) {
             throw new IllegalArgumentException("Player ID must be a valid 24-character hexadecimal string.");
         }
@@ -1589,23 +1733,34 @@ public class RoomService {
         if (roomId == null || roomId.isBlank()) {
             throw new IllegalArgumentException("Room id should not be empty.");
         }
-
         roomId = roomId.trim().replaceAll("\\s+", "");
-
         if (!roomId.matches("^[a-fA-F0-9]{24}$")) {
             throw new IllegalArgumentException("Room ID must be a valid 24-character hexadecimal string.");
         }
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new ResourceNotFoundException("No data found for the room"));
-
-        RequestDTO requestDTO = userFeignClient.getDetails(playerId)
+        // Validate player existence via Feign
+        userFeignClient.getDetails(playerId)
                 .orElseThrow(() -> new PlayerNotFoundException("No player found for the player id"));
 
-        room.setCurrentTurn(requestDTO.getPlayerId());
-        return roomRepository.save(room);
-    }
+        // 1. Perform the safe atomic update in MongoDB (touches ONLY currentTurn)
+        Query query = new Query(Criteria.where("_id").is(roomId));
+        Update update = new Update().set("currentTurn", playerId);
 
+        Room modifiedRoom = mongoTemplate.findAndModify(
+                query,
+                update,
+                FindAndModifyOptions.options().returnNew(false), // we can query it fresh right after
+                Room.class
+        );
+
+        if (modifiedRoom == null) {
+            throw new ResourceNotFoundException("No data found for the room");
+        }
+
+        // 2. Fetch the fully populated room fresh from the repository to guarantee all fields are present
+        return roomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException("No data found for the room"));
+    }
     public List<Room> getPlayerRooms(String playerId, int roomSize, String roomType, int issuedPoint) {
 
         if (playerId == null || playerId.isBlank()) {
@@ -1850,7 +2005,7 @@ public class RoomService {
 
         // If player doesn't already exist, add to the room
         if (!alreadyExists) {
-            playerDetails.add(new PlayerDetails(playerId, room.getIssuedPoint()));
+            playerDetails.add(new PlayerDetails(playerId, room.getIssuedPoint(),0));
             room.setPlayerDetails(playerDetails);
 
             // Save the updated room
@@ -1863,12 +2018,18 @@ public class RoomService {
         List<Room> rooms = roomRepository.findByGameStatus("Waiting");
         LocalDateTime currentTime = LocalDateTime.now();
         for (Room room : rooms) {
-            if(room.getRoomCreatedAt() != null && room.getRoomCreatedAt().plusSeconds(60).isBefore(currentTime)){
-                room.setGameStatus("Expired");
-                roomRepository.save(room);
-                roomRepository.delete(room);
+            if(room.getRoomCreatedAt() != null && !room.getRoomCreatedAt().isBlank()){
+                try {
+                    LocalDateTime roomCreatedAtTime = LocalDateTime.parse(room.getRoomCreatedAt());
+                    if(roomCreatedAtTime.plusSeconds(60).isBefore(currentTime)){
+                        room.setGameStatus("Expired");
+                        roomRepository.save(room);
+                        roomRepository.delete(room);
+                    }
+                } catch (Exception e) {
+                    logger.error("Failed to parse roomCreatedAt date for room ID {}: {}", room.getRoomId(), e.getMessage());
+                }
             }
         }
     }
-
 }

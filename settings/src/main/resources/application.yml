@@ -4,7 +4,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb+srv://sreemanvk:Msg2709@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
+      uri: mongodb+srv://sreemanvk:Sree2001@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
       database: player_settings
 
 server:

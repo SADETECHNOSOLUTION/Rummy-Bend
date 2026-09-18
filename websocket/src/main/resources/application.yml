@@ -4,28 +4,30 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb+srv://sreemanvk:Msg2709@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
+      uri: mongodb+srv://sreemanvk:Sree2001@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
       database: player_status
-
-management:
-  tracing:
-    sampling:
-      probability: 1.0
-  zipkin:
-    tracing:
-      endpoint: "http://localhost:9411/api/v2/spans"
-
-logging:
-  pattern:
-    level: "%5p [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}]"
-
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8762/eureka
+      defaultZone: http://localhost:8761/eureka
     fetch-registry: true
     register-with-eureka: true
 
+logging:
+  file:
+    name: logs/WEBSOCKET.log
+  pattern:
+    level: "%5p [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}]"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}] [%thread] %logger{36} - %msg%n"
+
+
 server:
   port: 7080
+
+management:
+  tracing:
+    enabled: false
+  zipkin:
+    tracing:
+      endpoint: ""

@@ -4,12 +4,15 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb+srv://sreemanvk:Msg2709@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
-      database: cards
+      uri: mongodb+srv://sreemanvk:Sree2001@cluster0.pvohmlz.mongodb.net/?appName=Cluster0
+      database: game_room
 
 logging:
+  file:
+    name: logs/game-engine.log
   pattern:
     level: "%5p [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}]"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}] [%thread] %logger{36} - %msg%n"
 
 server:
   port: 7072
@@ -19,12 +22,12 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: https://rummy-eureka-v1-35lo.onrender.com/eureka/
+      defaultZone: http://localhost:8761/eureka/
     fetch-registry: true
     register-with-eureka: true
-  instance:
-    # This will change how it appears in the Eureka Dashboard
-    instance-id: ${spring.application.name}:${random.value}
-    hostname: rummy-gameengine-v1-c9pv.onrender.com
-    # This ensures it uses the IP/Internal host for communication
-    prefer-ip-address: true
+#  instance:
+#    # This will change how it appears in the Eureka Dashboard
+#    instance-id: ${spring.application.name}:${random.value}
+#    hostname: rummy-gameengine-v1-c9pv.onrender.com
+#    # This ensures it uses the IP/Internal host for communication
+#    prefer-ip-address: true

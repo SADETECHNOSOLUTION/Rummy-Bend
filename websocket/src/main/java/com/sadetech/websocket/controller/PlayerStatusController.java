@@ -3,9 +3,7 @@ package com.sadetech.websocket.controller;
 import com.sadetech.websocket.service.PlayerStatusHandler;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,9 +11,20 @@ import java.util.Set;
 @RequestMapping("/api/player-status")
 public class PlayerStatusController {
 
+    @PostMapping("/broadcast/{roomId}")
+    public ResponseEntity<Void> broadcastCardUpdate(
+            @PathVariable String roomId,
+            @RequestBody String jsonPayload) {
+
+        // This triggers your WebSocket service's static broadcast method safely within its own JVM
+        PlayerStatusHandler.broadcastToRoom(roomId, jsonPayload);
+
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/online-players")
     public Set<String> getOnlinePlayers() {
-        return PlayerStatusHandler.onlinePlayers.keySet(); // Return list of online player emails
+        return PlayerStatusHandler.onlinePlayers.keySet();
     }
 
     @GetMapping("/online-count")
@@ -25,14 +34,23 @@ public class PlayerStatusController {
 
     @GetMapping("/last-ping-time/{email}")
     public Map<String, Long> lastPingTime(@PathVariable String email) {
-        // Fetch the last ping time for the given email
         Long lastPing = PlayerStatusHandler.playerLastPingTime.get(email);
         if (lastPing != null) {
             return Map.of("lastPingTime", lastPing);
         } else {
-            // Return a map with null or a sentinel value for missing player
-            return Map.of("error", -1L); // Or you can return a custom error code
+            return Map.of("error", -1L);
         }
     }
+}
 
+// Standalone controller so Feign can reach /internal/websocket/broadcast cleanly
+@RestController
+@RequestMapping("/internal/websocket")
+class WebSocketInternalController {
+
+    @PostMapping("/broadcast")
+    public ResponseEntity<String> triggerBroadcast(@RequestParam String roomId, @RequestParam String gameStatus) {
+        PlayerStatusHandler.broadcastToRoom(roomId, gameStatus);
+        return ResponseEntity.ok("Broadcast sent");
+    }
 }

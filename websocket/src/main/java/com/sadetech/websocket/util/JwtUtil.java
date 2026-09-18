@@ -15,8 +15,8 @@ public class JwtUtil {
     private static final Logger logger = Logger.getLogger(JwtUtil.class.getName());
 
     static {
-        String secretString = "843567893696976453275974432697R634976R738467TR678T34865R6834R8763T478378637664538745673865783678548735687R3";
-        byte[] keyBytes = Base64.getDecoder().decode(secretString.getBytes(StandardCharsets.UTF_8));
+        String secretString = "mySuperSecretKeyForLocalDevelopment1234567890";
+        byte[] keyBytes = secretString.getBytes(StandardCharsets.UTF_8);
         KEY = new SecretKeySpec(keyBytes, "HmacSHA256"); // Correct key creation
     }
 

@@ -11,4 +11,11 @@ public class PlayerDetails {
 
     private String playerId;
     private int issuedPoint;
+    private int currentScore;
+
+    public PlayerDetails(String playerId, int issuedPoint) {
+        this.playerId = playerId;
+        this.issuedPoint = issuedPoint;
+        this.currentScore = 0; // default live score
+    }
 }
